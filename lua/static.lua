@@ -16,7 +16,7 @@ hq_floor_1 = {
 	height = 11,
 	init = function()
 		print("init function called\n")
-		move_player()
+		move_player(2, 1)
 	end
 }
 	

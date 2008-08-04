@@ -3,6 +3,9 @@
 /* Handle to the Lua interpreter */
 lua_State *L;
 
+int player_x;
+int player_y;
+
 /* Font control variables */
 const char *font_file = "res/font8x12.bmp";
 int font_glyph_width = 8, font_glyph_height = 12;

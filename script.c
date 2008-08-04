@@ -8,9 +8,6 @@ int init_scripting(void) {
 	
 	luaL_openlibs(L);
 	
-	/* Add API functions to Lua */
-	lua_register(L, "move_player", api_move_player);
-	
 	return 1;
 }
 

@@ -9,11 +9,11 @@
 #include <lua/lauxlib.h>
 #include "externs.h"
 #include "config.h"
-#include "script.h"
 #include "misc.h"
 #include "item.h"
 #include "map.h"
 #include "game.h"
+#include "script.h"
 #include "api.h"
 
 #define GAME_NAME	"Aphelion"

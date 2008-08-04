@@ -3,6 +3,7 @@
 #define _API_H
 
 /* API prototypes */
-void api_move_player(lua_State*);
+void init_api(void);
+static int api_move_player(lua_State*);
 
 #endif

@@ -1,0 +1,4 @@
+A roguelike based on psionic mechanics.
+
+Requirements to compile:
+	Lua 5.1, The Doryen Library 1.3.1

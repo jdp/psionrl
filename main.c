@@ -25,6 +25,9 @@ int main(int argc, char *argv[])
 		return(1);
 	}
 	
+	/* Initialize the API */
+	init_api();
+	
 	/* Configure the game */
 	if (!config()) {
 		fprintf(stderr, "Configuration error.\n");

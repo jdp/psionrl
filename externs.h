@@ -5,6 +5,9 @@
 /* Handle to the Lua interpreter */
 extern lua_State *L;
 
+extern int player_x;
+extern int player_y;
+
 /* Globalize the font variables */
 extern const char *font_file;
 extern int font_glyph_width;

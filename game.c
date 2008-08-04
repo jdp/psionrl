@@ -13,7 +13,7 @@ bool is_walkable(map_t *m, int x, int y) {
 /* The main game loop */
 void play(void) {
 	int playing = 1;
-	int player_x = 0, player_y = 0;
+	player_x = player_y = 0;
 	int x, y, vpx, vpy;
 	
 	/* A messy way to do the map, works for now */
