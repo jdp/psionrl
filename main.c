@@ -1,0 +1,55 @@
+#include "common.h"
+
+void splash(void) {
+	clear();
+	fgcolor(TCOD_green);
+	write(1, 1, "Aphelion");
+	fgcolor(color_grey);
+	write(1, 2, "The Poppenkast");
+	write(1, 23, "beam '08");
+	update();
+}
+
+void menu(void) {
+	clear();
+	fgcolor(color_grey);
+	write(1, 1, "This will be a menu.");
+	update();
+}
+
+int main(int argc, char *argv[])
+{
+	/* Open up the Lua environment */
+	if (!init_scripting()) {
+		fprintf(stderr, "Error starting Lua environment.\n");
+		return(1);
+	}
+	
+	/* Configure the game */
+	if (!config()) {
+		fprintf(stderr, "Configuration error.\n");
+		return(1);
+	}
+	
+	/* Set the game font */
+	TCOD_console_set_custom_font(font_file, font_glyph_width,
+								 font_glyph_height, 16, 16, font_orientation,
+								 color_black);
+	
+	/* Open up the console window */
+	TCOD_console_init_root(ui_width, ui_height, ui_caption, false);
+	
+	/* Why is this necessary? */
+	/*
+	splash();
+	GETCH();
+	menu();
+	GETCH();
+	*/
+	
+	/* Enter the main game loop */
+	play();
+	
+	/* Clean & successful exit */
+	return(0);
+}
