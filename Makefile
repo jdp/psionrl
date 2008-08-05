@@ -2,7 +2,7 @@ TCOD = -ltcod-mingw
 LUA = -llua
 
 CC = gcc
-CFLAGS = -Wall -pedantic
+CFLAGS = -Wall -pedantic -std=c99
 LIBS = $(TCOD) $(LUA)
 OBJ = main.o externs.o game.o map.o script.o misc.o item.o config.o api.o
 OUT = psionrl.exe
@@ -10,31 +10,31 @@ OUT = psionrl.exe
 $(OUT): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LIBS)
 	
-main.o: main.c common.h
+main.o: main.c psionrl.h
 	$(CC) -c $<
 	
-externs.o: externs.c externs.h
+externs.o: externs.c
 	$(CC) -c $<
 	
-config.o: config.c config.h
+config.o: config.c
 	$(CC) -c $<
 	
-game.o: game.c game.h
-	$(CC) -std=c99 -c $<
-	
-map.o: map.c map.h
+game.o: game.c
 	$(CC) -c $<
 	
-script.o: script.c script.h
+map.o: map.c
 	$(CC) -c $<
 	
-api.o: api.c api.h
+script.o: script.c
 	$(CC) -c $<
 	
-misc.o: misc.c misc.h
+api.o: api.c
 	$(CC) -c $<
 	
-item.o: item.c item.h
+misc.o: misc.c
+	$(CC) -c $<
+	
+item.o: item.c
 	$(CC) -c $<
 	
 .PHONY: clean

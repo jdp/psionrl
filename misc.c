@@ -1,21 +1,4 @@
-#include "common.h"
-
-/* Pull L from script.o */
-extern lua_State *L;
-
-/* Returns a global variable from the Lua environment */
-const char* from_script(char *option) {
-	const char *value = NULL;
-	lua_getglobal(L, option);
-	if (!lua_isnoneornil(L, -1)) {
-		value = lua_tostring(L, -1);
-		lua_pop(L, 1);
-		return(value);
-	}
-	else {
-		return(NULL);
-	}
-}
+#include "psionrl.h"
 
 /* Forces player to pick a key within a list */
 char choice(char *options) {

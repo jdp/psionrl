@@ -1,4 +1,4 @@
-#include "common.h"
+#include "psionrl.h"
 
 /* Register all API functions */
 void init_api(void) {

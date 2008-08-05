@@ -1,4 +1,4 @@
-#include "common.h"
+#include "psionrl.h"
 
 /* Initialize the Lua environment */
 int init_scripting(void) {
@@ -20,4 +20,18 @@ int run_script(const char *file) {
 		return(0);
 	}
 	return(1);
+}
+
+/* Returns a global variable from the Lua environment */
+const char *from_script(char *option) {
+	const char *value = NULL;
+	lua_getglobal(L, option);
+	if (!lua_isnoneornil(L, -1)) {
+		value = lua_tostring(L, -1);
+		lua_pop(L, 1);
+		return(value);
+	}
+	else {
+		return(NULL);
+	}
 }

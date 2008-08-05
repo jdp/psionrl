@@ -1,25 +1,23 @@
-#include "common.h"
-
-extern lua_State *L;
+#include "psionrl.h"
 
 /* Returns a new map instance */
 map_t *map_new(int width, int height) {
 	map_t *map;
 	
-	if ((map = (map_t *)malloc(sizeof(map_t))) == NULL)
+	if ((map = (map_t *)malloc(sizeof(map_t))) == NULL) {
 		return(NULL);
+	}
 	
 	map->width = width;
 	map->height = height;
 	map->tiles = (tile_t *)malloc(sizeof(tile_t)*width*height);
-	memset(map->tiles, TILE_FLOOR, width*height);
 	map->fov = TCOD_map_new(width, height);
 	
 	return(map);
 }
 
 /* Returns a static map */
-map_t *map_new_static(const char *name) {
+map_t *map_load_static(const char *name) {
 	/* Make sure the map exists */
 	lua_getglobal(L, name);
 	if (lua_isnoneornil(L, -1)) {
@@ -53,23 +51,23 @@ map_t *map_new_static(const char *name) {
 	lua_pop(L, 1);
 	
 	/* Fill in the tiles based on the map */
-	printf("%s\n", raw_tiles);
+	const char *ok_tiles = OK_TILES;
 	int cur_tile = 0, scan = 0;
 	while (raw_tiles[scan++]) {
-		if (raw_tiles[scan] == '#' || raw_tiles[scan] == '.') {
-			printf("%c", raw_tiles[scan]);
+		if (strchr(ok_tiles, raw_tiles[scan])) {
 			switch (raw_tiles[scan]) {
 				case '.':
-					map->tiles[cur_tile++] = TILE_FLOOR;
+					map->tiles[cur_tile++] = tileset[TILE_FLOOR];
 					break;
 				case '#':
-					map->tiles[cur_tile++] = TILE_WALL;
+					map->tiles[cur_tile++] = tileset[TILE_WALL];
 					break;
+				case '@':
+					player_x = cur_tile % map->width;
+					player_y = (cur_tile-(cur_tile%map->width))/map->width;
+					map->tiles[cur_tile++] = tileset[TILE_FLOOR];
 				default:
 					break;
-			}
-			if (!(cur_tile % width)) {
-				printf("\n");
 			}
 		}
 	}
@@ -86,44 +84,36 @@ map_t *map_new_static(const char *name) {
 	return(map);
 }
 
-/* Returns a tile at the given position */
-tile_t tile_at(map_t *map, int x, int y) {
-	if ((x < 0) || (x > map->width-1))
-		return(TILE_EMPTY);
-	if ((y < 0) || (y > map->height-1))
-		return(TILE_EMPTY);
-	return(map->tiles[y*map->width+x]);
-}
-
 /* Calculates the map's fov based on tiles */
 void map_build_fov(map_t *map) {
 	int cx, cy;
 	for (cy = 0; cy < map->height; cy++) {
 		for (cx = 0; cx < map->width; cx++) {
-			switch (tile_at(map, cx, cy)) {
-				case TILE_EMPTY:
-					TCOD_map_set_properties(map->fov, cx, cy, false, false);
-					break;
-				case TILE_FLOOR:
-					TCOD_map_set_properties(map->fov, cx, cy, true, true);
-					break;
-				case TILE_WALL:
-					TCOD_map_set_properties(map->fov, cx, cy, false, false);
-					break;
-				default:
-					break;
-			}
+			tile_t *tile = tile_at(map, cx, cy);
+			TCOD_map_set_properties(map->fov, cx, cy, tile->walkable,
+									tile->transparent);
 		}
 	}
 }
 
+/* Returns a tile at the given position */
+tile_t *tile_at(map_t *map, int x, int y) {
+	if ((x < 0) || (x > map->width-1)) {
+		return(NULL);
+	}
+	if ((y < 0) || (y > map->height-1)) {
+		return(NULL);
+	}
+	return(&(map->tiles[y*map->width+x]));
+}
+
+
+
 /* Simple dig function */
+/*
 void map_dig(map_t *map, TCOD_map_t fov_overlay)
 {
-	/* Fill the map with floor tiles */
 	memset(map->tiles, TILE_FLOOR, map->width * map->height);
-	
-	/* Generate the field-of-view overlay based on map */
 	int x, y;
 	for (y = 0; y < map->height; y++)
 	{
@@ -146,3 +136,4 @@ void map_dig(map_t *map, TCOD_map_t fov_overlay)
 		}
 	}
 }
+*/

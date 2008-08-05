@@ -1,5 +1,5 @@
 #define _NO_CONFIG_EXTERNS
-#include "common.h"
+#include "psionrl.h"
 
 /* Configure the game */
 int config(void) {

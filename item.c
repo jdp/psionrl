@@ -1,4 +1,4 @@
-#include "common.h"
+#include "psionrl.h"
 
 /* Returns an empty item list */
 item_list_t *item_list_new(void) {

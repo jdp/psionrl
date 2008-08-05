@@ -1,4 +1,4 @@
-#include "common.h"
+#include "psionrl.h"
 
 /* Make the inventory accessible */
 item_list_t *inv = NULL;
@@ -17,7 +17,7 @@ void play(void) {
 	int x, y, vpx, vpy;
 	
 	/* A messy way to do the map, works for now */
-	map_t *map = map_new_static("hq_floor_1");
+	map_t *map = map_load_static("hq_floor_1");
 	//map_t *map = map_new(50, 50);
 	map_build_fov(map);
 	
@@ -30,16 +30,22 @@ void play(void) {
 		clear();
 		
 		/* Calculate the position of the viewport */
-		vpx = player_x - ui_viewport_width/2 > 0 ? player_x - ui_viewport_width/2 : 0; //ui_viewport_width/2;
-		vpy = player_y - ui_viewport_height/2 > 0 ? player_y - ui_viewport_height/2 : 0; //ui_viewport_height/2;
-		if ((vpx + ui_viewport_width) > map->width)
+		vpx = player_x - ui_viewport_width/2 > 0 ?
+			  player_x - ui_viewport_width/2 : 0;
+		vpy = player_y - ui_viewport_height/2 > 0 ?
+			  player_y - ui_viewport_height/2 : 0;
+		if ((vpx + ui_viewport_width) > map->width) {
 			vpx = map->width - ui_viewport_width;
-		if ((vpy + ui_viewport_height) > map->height)
+		}
+		if ((vpy + ui_viewport_height) > map->height) {
 			vpy = map->height - ui_viewport_height;
-		if (ui_viewport_width > map->width)
+		}
+		if (ui_viewport_width > map->width) {
 			vpx = 0;
-		if (ui_viewport_height > map->height)
+		}
+		if (ui_viewport_height > map->height) {
 			vpy = 0;
+		}
 			
 		/* Calculate the field of view */
 		TCOD_map_compute_fov(map->fov, player_x, player_y, 5);
@@ -47,32 +53,23 @@ void play(void) {
 		/* Only display the part of the map inside the viewport */
 		for (y = 0; y < ui_viewport_height; y++) {
 			for (x = 0; x < ui_viewport_width; x++) {
-				if (TCOD_map_is_in_fov(map->fov, vpx+x, vpy+y))
-					fgcolor(color_grey);
-				else
-					fgcolor(color_dark_grey);
-				
 				if (((vpy+y) < map->height) && ((vpx+x) < map->width)) {
-					switch (tile_at(map, vpx+x, vpy+y)) {
-						case TILE_FLOOR:
-							write(ui_viewport_x+x, ui_viewport_y+y, ".");
-							break;
-						case TILE_WALL:
-							write(ui_viewport_x+x, ui_viewport_y+y, "#");
-							break;
-						default:
-							write(ui_viewport_x+x, ui_viewport_y+y, "?");
-							//printf("unknown tile: %d\n", tile_at(map, vpy+y, vpx+x));
-							break;
+					tile_t *tile = tile_at(map, vpx+x, vpy+y);
+					if (TCOD_map_is_in_fov(map->fov, vpx+x, vpy+y)) {
+						fgcolor(tile->fg_lit);
 					}
+					else {
+						fgcolor(tile->fg_dark);
+					}
+					PUTCH(ui_viewport_x+x, ui_viewport_y+y, tile->glyph);
 				}
 			}
 		}
 		
 		/* Draw the player and status */
-		fgcolor(color_white);
+		fgcolor(C_WHITE);
 		write(ui_viewport_x+player_x-vpx, ui_viewport_y+player_y-vpy, "@");
-		fgcolor(color_grey);
+		fgcolor(C_GREY);
 		write(1, 23, "Gu the Cabeboy");
 		
 		/* Redraw the screen */
@@ -107,7 +104,7 @@ void play(void) {
 			switch (k.c) {
 				/* Quit the game */
 				case 'Q':
-					fgcolor(color_grey);
+					fgcolor(C_GREY);
 					write(1, 1, "Really quit? [yn]");
 					update();
 					if (choice("yn") == 'y') {
@@ -128,11 +125,11 @@ void play(void) {
 
 void inventory(void) {
 	clear();
-	fgcolor(color_white);
+	fgcolor(C_WHITE);
 	write(1, 1, "Inventory");
 	item_t *item = inv->head;
 	if (item == NULL) {
-		fgcolor(color_grey);
+		fgcolor(C_GREY);
 		write(1, 3, "Empty");
 	}
 	else {
@@ -142,7 +139,7 @@ void inventory(void) {
 			item = item->next;
 		}
 	}
-	fgcolor(color_grey);
+	fgcolor(C_GREY);
 	write(1, 23, "[? for help]");
 	update();
 	GETCH();
