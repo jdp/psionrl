@@ -1,10 +1,11 @@
 TCOD = -ltcod-mingw
 LUA = -llua
+INIPARSER = -liniparser
 
 CC = gcc
 CFLAGS = -Wall -pedantic -std=c99
-LIBS = $(TCOD) $(LUA)
-OBJ = main.o externs.o game.o map.o script.o misc.o item.o config.o api.o
+LIBS = $(TCOD) $(LUA) $(INIPARSER)
+OBJ = main.o externs.o game.o map.o script.o misc.o item.o config.o api.o player.o
 OUT = psionrl.exe
 
 $(OUT): $(OBJ)
@@ -20,6 +21,9 @@ config.o: config.c
 	$(CC) -c $<
 	
 game.o: game.c
+	$(CC) -c $<
+	
+player.o: player.c
 	$(CC) -c $<
 	
 map.o: map.c

@@ -1,5 +1,10 @@
 #include "psionrl.h"
 
+/* Wait for and return a keypress */
+TCOD_key_t getkey(void) {
+	return(TCOD_console_wait_for_keypress(1));
+}
+
 /* Forces player to pick a key within a list */
 char choice(char *options) {
 	TCOD_key_t k;
@@ -24,8 +29,13 @@ void bgcolor(TCOD_color_t c) {
 }
 
 /* A generic string write function */
-void write(int x, int y, const char *str) {
+void putstr(int x, int y, const char *str) {
 	TCOD_console_print_left(NULL, x, y, TCOD_BKGND_SET, str);
+}
+
+/* Place a character on the screen */
+void putch(int x, int y, unsigned char c) {
+	TCOD_console_put_char(NULL, x, y, c, TCOD_BKGND_SET);
 }
 
 /* Clear the screen */

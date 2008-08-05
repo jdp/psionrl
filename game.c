@@ -1,8 +1,5 @@
 #include "psionrl.h"
 
-/* Make the inventory accessible */
-item_list_t *inv = NULL;
-
 /* Returns whether or not a player can walk on a tile */
 bool is_walkable(map_t *m, int x, int y) {
 	return(TCOD_map_is_walkable(m->fov, x, y)
@@ -13,13 +10,15 @@ bool is_walkable(map_t *m, int x, int y) {
 /* The main game loop */
 void play(void) {
 	int playing = 1;
-	player_x = player_y = 0;
+	init_player();
+	rename_player("Gu the Cabeboy");
+	player->x = player->y = 0;
 	int x, y, vpx, vpy;
 	
 	/* A messy way to do the map, works for now */
 	map_t *map = map_load_static("hq_floor_1");
 	//map_t *map = map_new(50, 50);
-	map_build_fov(map);
+	map_fov_build(map);
 	
 	/* Initialize the inventory */
 	inv = item_list_new();
@@ -30,10 +29,10 @@ void play(void) {
 		clear();
 		
 		/* Calculate the position of the viewport */
-		vpx = player_x - ui_viewport_width/2 > 0 ?
-			  player_x - ui_viewport_width/2 : 0;
-		vpy = player_y - ui_viewport_height/2 > 0 ?
-			  player_y - ui_viewport_height/2 : 0;
+		vpx = player->x - ui_viewport_width/2 > 0 ?
+			  player->x - ui_viewport_width/2 : 0;
+		vpy = player->y - ui_viewport_height/2 > 0 ?
+			  player->y - ui_viewport_height/2 : 0;
 		if ((vpx + ui_viewport_width) > map->width) {
 			vpx = map->width - ui_viewport_width;
 		}
@@ -48,7 +47,7 @@ void play(void) {
 		}
 			
 		/* Calculate the field of view */
-		TCOD_map_compute_fov(map->fov, player_x, player_y, 5);
+		map_fov_do(map, player->x, player->y);
 
 		/* Only display the part of the map inside the viewport */
 		for (y = 0; y < ui_viewport_height; y++) {
@@ -61,16 +60,16 @@ void play(void) {
 					else {
 						fgcolor(tile->fg_dark);
 					}
-					PUTCH(ui_viewport_x+x, ui_viewport_y+y, tile->glyph);
+					putch(ui_viewport_x+x, ui_viewport_y+y, tile->glyph);
 				}
 			}
 		}
 		
 		/* Draw the player and status */
 		fgcolor(C_WHITE);
-		write(ui_viewport_x+player_x-vpx, ui_viewport_y+player_y-vpy, "@");
-		fgcolor(C_GREY);
-		write(1, 23, "Gu the Cabeboy");
+		putstr(ui_viewport_x+player->x-vpx, ui_viewport_y+player->y-vpy, "@");
+		fgcolor(C_MSG);
+		putstr(1, 23, player->name);
 		
 		/* Redraw the screen */
 		update();
@@ -81,20 +80,20 @@ void play(void) {
 			switch (k.vk) {
 				/* Move around */
 				case TCODK_UP:
-					if (is_walkable(map, player_x, player_y-1))
-						player_y--;
+					if (is_walkable(map, player->x, player->y-1))
+						player->y--;
 					break;
 				case TCODK_DOWN:
-					if (is_walkable(map, player_x, player_y+1))
-						player_y++;
+					if (is_walkable(map, player->x, player->y+1))
+						player->y++;
 					break;
 				case TCODK_LEFT:
-					if (is_walkable(map, player_x-1, player_y))
-						player_x--;
+					if (is_walkable(map, player->x-1, player->y))
+						player->x--;
 					break;
 				case TCODK_RIGHT:
-					if (is_walkable(map, player_x+1, player_y))
-						player_x++;
+					if (is_walkable(map, player->x+1, player->y))
+						player->x++;
 					break;
 				default:
 					break;
@@ -104,8 +103,8 @@ void play(void) {
 			switch (k.c) {
 				/* Quit the game */
 				case 'Q':
-					fgcolor(C_GREY);
-					write(1, 1, "Really quit? [yn]");
+					fgcolor(C_MSG);
+					putstr(1, 1, "Really quit? [yn]");
 					update();
 					if (choice("yn") == 'y') {
 						playing = 0;
@@ -126,21 +125,21 @@ void play(void) {
 void inventory(void) {
 	clear();
 	fgcolor(C_WHITE);
-	write(1, 1, "Inventory");
+	putstr(1, 1, "Inventory");
 	item_t *item = inv->head;
 	if (item == NULL) {
 		fgcolor(C_GREY);
-		write(1, 3, "Empty");
+		putstr(1, 3, "Empty");
 	}
 	else {
 		int y = 3;
 		while (item != NULL) {
-			write(1, y++, item->name);
+			putstr(1, y++, item->name);
 			item = item->next;
 		}
 	}
 	fgcolor(C_GREY);
-	write(1, 23, "[? for help]");
+	putstr(1, 23, "[? for help]");
 	update();
 	GETCH();
 }

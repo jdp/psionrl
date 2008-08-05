@@ -17,8 +17,8 @@ static int api_move_player(lua_State *LS) {
 	int y = lua_tonumber(LS, -1);
 	lua_pop(LS, 2);
 	
-	player_x = x;
-	player_y = y;
+	player->x = x;
+	player->y = y;
 	printf("moved player to %d,%d\n", x, y);
 	
 	return(1);

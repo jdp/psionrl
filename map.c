@@ -63,8 +63,8 @@ map_t *map_load_static(const char *name) {
 					map->tiles[cur_tile++] = tileset[TILE_WALL];
 					break;
 				case '@':
-					player_x = cur_tile % map->width;
-					player_y = (cur_tile-(cur_tile%map->width))/map->width;
+					player->x = cur_tile % map->width;
+					player->y = (cur_tile-(cur_tile%map->width))/map->width;
 					map->tiles[cur_tile++] = tileset[TILE_FLOOR];
 				default:
 					break;
@@ -72,7 +72,7 @@ map_t *map_load_static(const char *name) {
 		}
 	}
 	
-	/* Run an option initialization function */
+	/* Run an optional initialization function */
 	lua_getfield(L, -1, "init");
 	if (!lua_isnoneornil(L, -1)) {
 		lua_call(L, 0, 0);
@@ -84,16 +84,21 @@ map_t *map_load_static(const char *name) {
 	return(map);
 }
 
-/* Calculates the map's fov based on tiles */
-void map_build_fov(map_t *map) {
+/* Generates the fov settings from map tiles */
+void map_fov_build(map_t *map) {
 	int cx, cy;
 	for (cy = 0; cy < map->height; cy++) {
 		for (cx = 0; cx < map->width; cx++) {
 			tile_t *tile = tile_at(map, cx, cy);
-			TCOD_map_set_properties(map->fov, cx, cy, tile->walkable,
-									tile->transparent);
+			TCOD_map_set_properties(map->fov, cx, cy, tile->transparent,
+									tile->walkable);
 		}
 	}
+}
+
+/* Computes the fov */
+void map_fov_do(map_t *map, int x, int y) {
+	TCOD_map_compute_fov(map->fov, x, y, player->fov_radius);
 }
 
 /* Returns a tile at the given position */
@@ -106,34 +111,3 @@ tile_t *tile_at(map_t *map, int x, int y) {
 	}
 	return(&(map->tiles[y*map->width+x]));
 }
-
-
-
-/* Simple dig function */
-/*
-void map_dig(map_t *map, TCOD_map_t fov_overlay)
-{
-	memset(map->tiles, TILE_FLOOR, map->width * map->height);
-	int x, y;
-	for (y = 0; y < map->height; y++)
-	{
-		for (x = 0; x < map->width; x++)
-		{
-			switch (tile_at(map, x, y))
-			{
-				case TILE_EMPTY:
-					TCOD_map_set_properties(fov_overlay, x, y, 0, 0);
-					break;
-				case TILE_FLOOR:
-					TCOD_map_set_properties(fov_overlay, x, y, 1, 1);
-					break;
-				case TILE_WALL:
-					TCOD_map_set_properties(fov_overlay, x, y, 0, 0);
-					break;
-				default:
-					break;
-			}
-		}
-	}
-}
-*/

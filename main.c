@@ -3,17 +3,17 @@
 void splash(void) {
 	clear();
 	fgcolor(C_WHITE);
-	write(1, 1, "Aphelion");
-	fgcolor(C_GREY);
-	write(1, 2, "The Poppenkast");
-	write(1, 23, "beam '08");
+	putstr(1, 1, "Aphelion");
+	fgcolor(C_MSG);
+	putstr(1, 2, "The Poppenkast");
+	putstr(1, 23, "beam '08");
 	update();
 }
 
 void menu(void) {
 	clear();
-	fgcolor(C_GREY);
-	write(1, 1, "This will be a menu.");
+	fgcolor(C_MSG);
+	putstr(1, 1, "This will be a menu.");
 	update();
 }
 
@@ -45,9 +45,9 @@ int main(int argc, char *argv[])
 	/* Why is this necessary? */
 	/*
 	splash();
-	GETCH();
+	getkey();
 	menu();
-	GETCH();
+	getkey();
 	*/
 	
 	/* Enter the main game loop */

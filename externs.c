@@ -1,10 +1,13 @@
 #include "psionrl.h"
 
 /* Handle to the Lua interpreter */
-lua_State *L;
+lua_State *L = NULL;
 
-int player_x;
-int player_y;
+/* The player */
+player_t *player = NULL;
+
+/* The inventory */
+item_list_t *inv = NULL;
 
 /* Font variables */
 const char *font_file = "res/font8x12.bmp";
@@ -19,8 +22,8 @@ int ui_viewport_width = 38, ui_viewport_height = 19;
 
 /* The tileset */
 tile_t tileset[MAX_TILES] = {
-	/* type, glyph, fg_lit, fg_dark, walkable, transparent */
-	{ TILE_EMPTY, '?', C_DARK_GREY, C_DARK_GREY, 0, 0 },
-	{ TILE_FLOOR, '.', C_GREY,		C_DARK_GREY, 1, 1 },
-	{ TILE_WALL,  '#', C_DARK_GREY, C_DARK_GREY, 0, 0 }
+	/* type, glyph, fg_lit, fg_dark, transparent, walkable */
+	{ TILE_EMPTY,	'?', C_DARK_GREY, 	C_DARK_GREY, 0, 0 },
+	{ TILE_FLOOR,	'.', C_LIGHT_GREY,	C_DARK_GREY, 1, 1 },
+	{ TILE_WALL, 	219, C_GREY, 		C_DARK_GREY, 0, 0 }
 };
