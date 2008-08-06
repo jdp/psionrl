@@ -29,7 +29,7 @@ void bgcolor(TCOD_color_t c) {
 }
 
 /* A generic string write function */
-void putstr(int x, int y, const char *str) {
+void putstr(int x, int y, char *str) {
 	TCOD_console_print_left(NULL, x, y, TCOD_BKGND_SET, str);
 }
 

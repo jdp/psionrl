@@ -16,9 +16,11 @@ void play(void) {
 	int x, y, vpx, vpy;
 	
 	/* A messy way to do the map, works for now */
-	map_t *map = map_load_static("hq_floor_1");
-	//map_t *map = map_new(50, 50);
+	//map_t *map = map_load_static("hq_floor_1");
+	map_t *map = map_new(50, 50);
+	generate_cave(map);
 	map_fov_build(map);
+	blink_player(map);
 	
 	/* Initialize the inventory */
 	inv = item_list_new();
@@ -48,7 +50,7 @@ void play(void) {
 			
 		/* Calculate the field of view */
 		map_fov_do(map, player->x, player->y);
-
+		
 		/* Only display the part of the map inside the viewport */
 		for (y = 0; y < ui_viewport_height; y++) {
 			for (x = 0; x < ui_viewport_width; x++) {
@@ -67,7 +69,7 @@ void play(void) {
 		
 		/* Draw the player and status */
 		fgcolor(C_WHITE);
-		putstr(ui_viewport_x+player->x-vpx, ui_viewport_y+player->y-vpy, "@");
+		putch(ui_viewport_x+player->x-vpx, ui_viewport_y+player->y-vpy, '@');
 		fgcolor(C_MSG);
 		putstr(1, 23, player->name);
 		
@@ -75,7 +77,7 @@ void play(void) {
 		update();
 		
 		/* Handle keypress */
-		TCOD_key_t k = GETCH();
+		TCOD_key_t k = getkey();
 		if (k.c == 0) {
 			switch (k.vk) {
 				/* Move around */
@@ -103,12 +105,7 @@ void play(void) {
 			switch (k.c) {
 				/* Quit the game */
 				case 'Q':
-					fgcolor(C_MSG);
-					putstr(1, 1, "Really quit? [yn]");
-					update();
-					if (choice("yn") == 'y') {
-						playing = 0;
-					}
+					playing = quit();
 					break;
 				
 				/* Open up the inventory */
@@ -120,6 +117,15 @@ void play(void) {
 			}
 		}
 	}
+	
+	free(map);
+}
+
+bool quit(void) {
+	fgcolor(C_MSG);
+	putstr(1, 1, "Really quit? [yn]");
+	update();
+	return (choice("yn") == 'n');
 }
 
 void inventory(void) {
@@ -141,5 +147,5 @@ void inventory(void) {
 	fgcolor(C_GREY);
 	putstr(1, 23, "[? for help]");
 	update();
-	GETCH();
+	getkey();
 }

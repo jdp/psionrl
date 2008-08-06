@@ -37,17 +37,24 @@ TCOD_color_t color_table[MAX_COLORS] = {
 #define C_GREY			(TCOD_color_t){ 108, 108, 108 }
 #define C_DARK_GREY		(TCOD_color_t){  68,  68,  68 }
 #define C_BLACK			(TCOD_color_t){   0,   0,   0 }
-
 #define C_MSG			C_LIGHT_GREY
 
+/* Nothing worse than long function names */
+#define ini_open(f)          iniparser_load(f)
+#define ini_getstr(f, v, d)	 iniparser_getstring(f, v, d)
+#define ini_getint(f, v, d)  iniparser_getint(f, v, d)
+#define ini_getbool(f, v, d) iniparser_getboolean(f, v, d)
+
 /* Player structure */
+
 typedef struct {
 	char *name;
 	int x, y;
 	int fov_radius;
 } player_t;
 
-/* Item structure */
+/* Item stuff */
+
 typedef struct {
 	char *name;
 	bool stackable;
@@ -55,13 +62,14 @@ typedef struct {
 	void *next;
 } item_t;
 
-/* Item list structure */
 typedef struct {
 	item_t *head, *tail;
 } item_list_t;
 
-/* Valid tile types */
+/* Tile stuff */
+
 #define OK_TILES	"@#."
+
 enum {
 	TILE_EMPTY = 0,
 	TILE_FLOOR,
@@ -84,10 +92,16 @@ typedef struct {
 	TCOD_map_t fov;
 } map_t;
 
+/* Configuration prototypes */
+
+int config(void);
+
 /* Player prototypes */
 
 int  init_player(void);
 void rename_player(const char *);
+void move_player(int, int);
+void blink_player(map_t*);
 
 /* Map prototypes */
 
@@ -96,6 +110,7 @@ map_t*  map_load_static(const char*);
 void    map_fov_build(map_t*);
 void    map_fov_do(map_t*, int, int);
 tile_t* tile_at(map_t*, int, int);
+void    generate_forest(map_t*);
 
 /* Item prototypes */
 
@@ -107,6 +122,7 @@ item_t*      item_new(const char*, bool, int);
 
 void play(void);
 void inventory(void);
+bool quit(void);
 bool is_walkable(map_t*, int, int);
 
 /* Miscellaneous prototypes */
@@ -115,20 +131,16 @@ TCOD_key_t getkey(void);
 char choice(char*);
 void fgcolor(TCOD_color_t);
 void bgcolor(TCOD_color_t);
-void putstr(int, int, const char*);
+void putstr(int, int, char*);
 void putch(int, int, unsigned char);
 void clear(void);
 void update(void);
 
-/* Configuration prototypes */
-
-int config(void);
-
 /* Scripting prototypes */
 
-int         init_scripting(void);
-int         run_script(const char *);
-const char* from_script(char*);
+int   init_scripting(void);
+int   run_script(char*);
+char* from_script(char*);
 
 /* API prototypes */
 
@@ -137,23 +149,31 @@ static int api_move_player(lua_State*);
 
 /* External variables */
 
+#ifndef _NO_EXTERNS
+
 extern lua_State *L;
 
 extern player_t *player;
 
 extern item_list_t *inv;
 
-extern const char *font_file;
-extern int font_glyph_width;
-extern int font_glyph_height;
-extern int font_orientation;
+extern char* font_file;
+extern int   font_glyph_width;
+extern int   font_glyph_height;
+extern int   font_orientation;
 
-extern const char *ui_caption;
-extern int ui_width;
-extern int ui_height;
-extern int ui_viewport_x;
-extern int ui_viewport_y;
-extern int ui_viewport_width;
-extern int ui_viewport_height;
+extern char* ui_caption;
+extern int   ui_width;
+extern int   ui_height;
+extern int   ui_viewport_x;
+extern int   ui_viewport_y;
+extern int   ui_viewport_width;
+extern int   ui_viewport_height;
+extern int   ui_msg_x;
+extern int   ui_msg_y;
+extern int   ui_msg_width;
+extern int   ui_msg_height;
 
 extern tile_t tileset[];
+
+#endif

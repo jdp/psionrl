@@ -5,13 +5,13 @@ INIPARSER = -liniparser
 CC = gcc
 CFLAGS = -Wall -pedantic -std=c99
 LIBS = $(TCOD) $(LUA) $(INIPARSER)
-OBJ = main.o externs.o game.o map.o script.o misc.o item.o config.o api.o player.o
+OBJ = externs.o main.o game.o map.o script.o misc.o item.o config.o api.o player.o
 OUT = psionrl.exe
 
-$(OUT): $(OBJ)
+$(OUT): $(OBJ) psionrl.h
 	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LIBS)
 	
-main.o: main.c psionrl.h
+main.o: main.c
 	$(CC) -c $<
 	
 externs.o: externs.c
@@ -33,7 +33,7 @@ script.o: script.c
 	$(CC) -c $<
 	
 api.o: api.c
-	$(CC) -c $<
+	$(CC) $(CFLAGS) -c $<
 	
 misc.o: misc.c
 	$(CC) -c $<
@@ -44,11 +44,6 @@ item.o: item.c
 .PHONY: clean
 clean:
 	rm -rf *.o
-	
-.PHONY: run
-run:
-	cd ../bin
-	game
 
 .PHONY: build
 build:
