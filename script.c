@@ -11,7 +11,7 @@ int init_scripting(void) {
 
 /* Run a script */
 int run_script(char *name) {
-	char* file = (char*) malloc(strlen(name) + 12);
+	char* file = (char*) malloc(strlen(name) + 13);
 	if (file == NULL) {
 		return 0;
 	}

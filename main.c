@@ -3,7 +3,7 @@
 void splash(void) {
 	clear();
 	fgcolor(C_WHITE);
-	putstr(1, 1, "Aphelion");
+	putstr(1, 1, "PsionRL");
 	fgcolor(C_MSG);
 	putstr(1, 2, "The Poppenkast");
 	putstr(1, 23, "beam '08");
@@ -49,9 +49,23 @@ int main(int argc, char *argv[])
 	getkey();
 	*/
 	
+	/*
+	run_script("test");
+	lua_getglobal(L, "monsters");
+	lua_pushnil(L);
+	while (lua_next(L, -2) != 0) {
+		printf("%s - %s\n",
+			lua_typename(L, lua_type(L, -2)),
+			lua_tostring(L, -1));
+		lua_pop(L, 1);
+	}
+	lua_pop(L, 1);
+	printf("TOS: %d\n", lua_gettop(L));
+	*/
+	
 	/* Enter the main game loop */
 	play();
 	
 	/* Clean & successful exit */
-	return(0);
+	return 0;
 }

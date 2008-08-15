@@ -10,16 +10,16 @@ bool is_walkable(map_t *m, int x, int y) {
 /* The main game loop */
 void play(void) {
 	int playing = 1;
-	init_player();
-	rename_player("Gu the Cabeboy");
-	player->x = player->y = 0;
 	int x, y, vpx, vpy;
 	
 	/* A messy way to do the map, works for now */
 	//map_t *map = map_load_static("hq_floor_1");
 	map_t *map = map_new(50, 50);
-	generate_cave(map);
+	generate_forest(map);
 	map_fov_build(map);
+	
+	init_player();
+	rename_player("Gu the Cabeboy");
 	blink_player(map);
 	
 	/* Initialize the inventory */
@@ -81,28 +81,43 @@ void play(void) {
 		if (k.c == 0) {
 			switch (k.vk) {
 				/* Move around */
+				case TCODK_KP8:
 				case TCODK_UP:
 					if (is_walkable(map, player->x, player->y-1))
 						player->y--;
 					break;
+				
+				case TCODK_KP2:
 				case TCODK_DOWN:
 					if (is_walkable(map, player->x, player->y+1))
 						player->y++;
 					break;
+				
+				case TCODK_KP4:
 				case TCODK_LEFT:
 					if (is_walkable(map, player->x-1, player->y))
 						player->x--;
 					break;
+				
+				case TCODK_KP6:
 				case TCODK_RIGHT:
 					if (is_walkable(map, player->x+1, player->y))
 						player->x++;
 					break;
+				
+				/* View character summary */
+				case TCODK_TAB:
+					character();
+					break;
+				
 				default:
+					printf("%d %d\n", TCODK_TAB, k.vk);
 					break;
 			}
 		}
 		else {
 			switch (k.c) {
+				
 				/* Quit the game */
 				case 'Q':
 					playing = quit();
@@ -112,6 +127,12 @@ void play(void) {
 				case 'i':
 					inventory();
 					break;
+				
+				/* View character summary */
+				case 'c':
+					character();
+					break;
+				
 				default:
 					break;
 			}
@@ -146,6 +167,34 @@ void inventory(void) {
 	}
 	fgcolor(C_GREY);
 	putstr(1, 23, "[? for help]");
+	update();
+	getkey();
+}
+
+void character(void) {
+	int line = 3;
+	
+	clear();
+	
+	// Show statistics
+	fgcolor(C_WHITE);
+	putstrf(1, 1, "%s", player->name);
+	fgcolor(C_LIGHT_GREY);
+	putstrf(1, line++, "Level:  %d", 1);
+	putstrf(1, line++, "Health: %d/%d", 7, 7);
+	putstrf(1, line++, "Mana:   %d/%d", 5, 5);
+	putstrf(1, line++, "Power:  %d", 3);
+	putstrf(1, line++, "Wisdom: %d", 1);
+	putstrf(1, line++, "Speed:  %d", 2);
+	
+	// Show intrinsics
+	line++;
+	fgcolor(C_WHITE);
+	putstrf(1, line++, "Intrinsics");
+	fgcolor(C_LIGHT_GREY);
+	line++;
+	putstrf(1, line++, "Cold resistant");
+	
 	update();
 	getkey();
 }

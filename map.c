@@ -16,7 +16,7 @@ map_t *map_new(int width, int height) {
 	int x, y;
 	for (y = 0; y < height; y++) {
 		for (x = 0; x < width; x++) {
-			map->tiles[y*width+x] = tileset[TILE_FLOOR];
+			map->tiles[y*width+x] = tileset[TILE_WALL];
 		}
 	}
 	
@@ -108,6 +108,16 @@ void map_fov_do(map_t *map, int x, int y) {
 	TCOD_map_compute_fov(map->fov, x, y, player->fov_radius);
 }
 
+/* Fills a rectangle width a tile type */
+void map_fill_rect(map_t* map, tile_t tile, int x, int y, int w, int h) {
+	int scan_x, scan_y;
+	for (scan_y = y; scan_y < y + h; scan_y++) {
+		for (scan_x = x; scan_x < x + w; scan_x++) {
+			map->tiles[scan_y*map->width+scan_x] = tile;
+		}
+	}
+}
+
 /* Returns a tile at the given position */
 tile_t *tile_at(map_t *map, int x, int y) {
 	if ((x < 0) || (x > map->width-1)) {
@@ -128,12 +138,14 @@ void generate_forest(map_t *map) {
 				map->tiles[y*map->width+x].glyph = 'T';
 				map->tiles[y*map->width+x].fg_lit = (TCOD_color_t){88,141,67};
 				map->tiles[y*map->width+x].fg_dark = C_DARK_GREY;
-				//map->tiles[y*map->width+x].walkable = false;
+				map->tiles[y*map->width+x].walkable = false;
 				map->tiles[y*map->width+x].transparent = false;
 			}
 			else {
 				map->tiles[y*map->width+x].glyph = '.';
 				map->tiles[y*map->width+x].fg_lit = (TCOD_color_t){67,57,0};
+				map->tiles[y*map->width+x].walkable = true;
+				map->tiles[y*map->width+x].transparent = true;
 			}
 		}
 	}
@@ -207,9 +219,47 @@ void generate_cave(map_t *map) {
 				map->tiles[y*map->width+x].transparent = false;
 				map->tiles[y*map->width+x].walkable = false;
 			}
+			else {
+				map->tiles[y*map->width+x].glyph = '.';
+				map->tiles[y*map->width+x].fg_lit = C_LIGHT_GREY;
+				map->tiles[y*map->width+x].transparent = true;
+				map->tiles[y*map->width+x].walkable = true;
+			}
 		}
 	}
 	
 	free(cave);
 	free(tmp_cave);
+}
+
+/* Generate some ruins */
+void generate_ruins(map_t *map) {
+	/* Start off with a cave */
+	generate_cave(map);
+	
+	/* Special room wall tiles */
+	tile_t room_wall = tileset[TILE_WALL];
+	room_wall.glyph = '%';
+	room_wall.fg_lit = C_BROWN;
+	
+	/* Put some random rooms onto the map */
+	int room, rooms = rand() % 5 + 3;
+	int room_x, room_y, room_width, room_height;
+	
+	/* Build each room */
+	for (room = 0; room < rooms; room++) {
+		room_width = rand() % 8 + 4;
+		room_height = rand() % 6 + 4;
+		room_x = rand() % (map->width - room_width);
+		room_y = rand() % (map->height - room_height);
+		map_fill_rect(map, room_wall, room_x, room_y, room_width, room_height);
+		map_fill_rect(map, tileset[TILE_FLOOR], room_x+1, room_y+1,
+					  room_width-2, room_height-2);
+	}
+}
+
+/* Generate a simple dungeon */
+void generate_dungeon(map_t* map) {
+	map_fill_rect(map, tileset[TILE_FLOOR], map->width/2-3, map->height/2-3,
+				  6, 6);
 }

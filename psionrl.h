@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
 #include <iniparser.h>
@@ -32,11 +33,14 @@ TCOD_color_t color_table[MAX_COLORS] = {
 };
 */
 
-#define C_WHITE 		(TCOD_color_t){ 255, 255, 255 }
-#define C_LIGHT_GREY	(TCOD_color_t){ 149, 149, 149 }
-#define C_GREY			(TCOD_color_t){ 108, 108, 108 }
-#define C_DARK_GREY		(TCOD_color_t){  68,  68,  68 }
-#define C_BLACK			(TCOD_color_t){   0,   0,   0 }
+typedef TCOD_color_t color;
+
+#define C_WHITE 		(color){255, 255, 255}
+#define C_LIGHT_GREY	(color){149, 149, 149}
+#define C_GREY			(color){108, 108, 108}
+#define C_DARK_GREY		(color){ 68,  68,  68}
+#define C_BLACK			(color){  0,   0,   0}
+#define C_BROWN         (color){111,  79,  37}
 #define C_MSG			C_LIGHT_GREY
 
 /* Nothing worse than long function names */
@@ -48,18 +52,18 @@ TCOD_color_t color_table[MAX_COLORS] = {
 /* Player structure */
 
 typedef struct {
-	char *name;
-	int x, y;
-	int fov_radius;
+	char* name;
+	int   x, y;
+	int   fov_radius;
 } player_t;
 
 /* Item stuff */
 
 typedef struct {
-	char *name;
-	bool stackable;
-	int count;
-	void *next;
+	char* name;
+	bool  stackable;
+	int   count;
+	void* next;
 } item_t;
 
 typedef struct {
@@ -78,17 +82,19 @@ enum {
 };
 
 /* Tile structure */
+
 typedef struct {
-	int type;
+	int           type;
 	unsigned char glyph;
-	TCOD_color_t fg_lit, fg_dark;
-	bool transparent, walkable;
+	TCOD_color_t  fg_lit, fg_dark;
+	bool          transparent, walkable;
 } tile_t;
 
 /* Map structure */
+
 typedef struct {
-	int width, height;
-	tile_t *tiles;
+	int        width, height;
+	tile_t*    tiles;
 	TCOD_map_t fov;
 } map_t;
 
@@ -109,8 +115,12 @@ map_t*  map_new(int, int);
 map_t*  map_load_static(const char*);
 void    map_fov_build(map_t*);
 void    map_fov_do(map_t*, int, int);
+void    map_fill_rect(map_t*, tile_t, int, int, int, int);
 tile_t* tile_at(map_t*, int, int);
+
 void    generate_forest(map_t*);
+void    generate_cave(map_t*);
+void    generate_dungeon(map_t*);
 
 /* Item prototypes */
 
@@ -122,19 +132,21 @@ item_t*      item_new(const char*, bool, int);
 
 void play(void);
 void inventory(void);
+void character(void);
 bool quit(void);
 bool is_walkable(map_t*, int, int);
 
 /* Miscellaneous prototypes */
 
 TCOD_key_t getkey(void);
-char choice(char*);
-void fgcolor(TCOD_color_t);
-void bgcolor(TCOD_color_t);
-void putstr(int, int, char*);
-void putch(int, int, unsigned char);
-void clear(void);
-void update(void);
+char       choice(char*);
+void       fgcolor(TCOD_color_t);
+void       bgcolor(TCOD_color_t);
+void       putstr(int, int, char*);
+void       putstrf(int, int, char*, ...);
+void       putch(int, int, unsigned char);
+void       clear(void);
+void       update(void);
 
 /* Scripting prototypes */
 

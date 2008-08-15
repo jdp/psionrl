@@ -33,6 +33,18 @@ void putstr(int x, int y, char *str) {
 	TCOD_console_print_left(NULL, x, y, TCOD_BKGND_SET, str);
 }
 
+/* A generic variable-length string write function */
+void putstrf(int x, int y, char *fmt, ...) {
+	va_list vl;
+	char buffer[80];
+	
+	va_start(vl, fmt);
+	vsprintf(buffer, fmt, vl);
+	va_end(vl);
+	
+	putstr(x, y, buffer);
+}
+
 /* Place a character on the screen */
 void putch(int x, int y, unsigned char c) {
 	TCOD_console_put_char(NULL, x, y, c, TCOD_BKGND_SET);
