@@ -5,9 +5,9 @@
 #include <ctype.h>
 #include <iniparser.h>
 #include <tcod/libtcod.h>
-#include <lua/lua.h>
-#include <lua/lualib.h>
-#include <lua/lauxlib.h>
+#include <lua5.1/lua.h>
+#include <lua5.1/lualib.h>
+#include <lua5.1/lauxlib.h>
 
 /* Useful macros */
 #define GETCH() getkey()
