@@ -35,8 +35,8 @@ int main(int argc, char *argv[])
 	}
 	
 	TCOD_console_set_custom_font(font_file, font_glyph_width,
-								 font_glyph_height, 16, 16, font_orientation,
-								 C_BLACK);
+								 font_glyph_height,
+								 TCOD_FONT_LAYOUT_ASCII_INCOL);
 	
 	/* Open up the console window */
 	TCOD_console_init_root(ui_width, ui_height, ui_caption, false);

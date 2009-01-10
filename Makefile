@@ -1,12 +1,12 @@
-TCOD = -ltcod-mingw
-LUA = -llua
-INIPARSER = -liniparser
+LIBTCOD = -ltcod
+LIBLUA = -llua5.1
+LIBINIPARSER = -liniparser
 
 CC = gcc
-CFLAGS = -Wall -pedantic -std=c99
-LIBS = $(TCOD) $(LUA) $(INIPARSER)
+CFLAGS = -Wall -pedantic -ansi
+LIBS = $(LIBTCOD) $(LIBLUA) $(LIBINIPARSER)
 OBJ = externs.o main.o game.o map.o script.o misc.o item.o config.o api.o player.o
-OUT = psionrl.exe
+OUT = psionrl
 
 $(OUT): $(OBJ) psionrl.h
 	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LIBS)

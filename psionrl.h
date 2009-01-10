@@ -4,7 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <iniparser.h>
-#include <libtcod/libtcod.h>
+#include <tcod/libtcod.h>
 #include <lua/lua.h>
 #include <lua/lualib.h>
 #include <lua/lauxlib.h>
