@@ -7,14 +7,16 @@ void init_api(void) {
 
 /* Move the player to x, y */
 static int api_move_player(lua_State *LS) {
+	int x, y;
+	
 	if (lua_gettop(LS) < 2) {
 		lua_pushstring(LS, "move_player takes 2 arguments");
 		lua_error(LS);
 		return(0);
 	}
-	
-	int x = lua_tonumber(LS, -2);
-	int y = lua_tonumber(LS, -1);
+
+	x = lua_tonumber(LS, -2);
+	y = lua_tonumber(LS, -1);
 	lua_pop(LS, 2);
 	
 	player->x = x;

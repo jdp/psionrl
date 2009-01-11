@@ -3,7 +3,7 @@
 /* Returns whether or not a player can walk on a tile */
 bool is_walkable(map_t *m, int x, int y) {
 	return(TCOD_map_is_walkable(m->fov, x, y)
-		   && (x >= 0) && (x < m->width)
+	       && (x >= 0) && (x < m->width)
 		   && (y >= 0) && (y < m->height));
 }
 
@@ -15,7 +15,7 @@ void play(void) {
 	/* A messy way to do the map, works for now */
 	//map_t *map = map_load_static("hq_floor_1");
 	map_t *map = map_new(50, 50);
-	generate_forest(map);
+	generate_cave(map);
 	map_fov_build(map);
 	
 	init_player();
@@ -83,26 +83,30 @@ void play(void) {
 				/* Move around */
 				case TCODK_KP8:
 				case TCODK_UP:
-					if (is_walkable(map, player->x, player->y-1))
+					if (is_walkable(map, player->x, player->y-1)) {
 						player->y--;
+					}
 					break;
 				
 				case TCODK_KP2:
 				case TCODK_DOWN:
-					if (is_walkable(map, player->x, player->y+1))
+					if (is_walkable(map, player->x, player->y+1)) {
 						player->y++;
+					}
 					break;
 				
 				case TCODK_KP4:
 				case TCODK_LEFT:
-					if (is_walkable(map, player->x-1, player->y))
+					if (is_walkable(map, player->x-1, player->y)) {
 						player->x--;
+					}
 					break;
 				
 				case TCODK_KP6:
 				case TCODK_RIGHT:
-					if (is_walkable(map, player->x+1, player->y))
+					if (is_walkable(map, player->x+1, player->y)) {
 						player->x++;
+					}
 					break;
 				
 				/* View character summary */

@@ -15,7 +15,7 @@ int init_player(void) {
 
 /* Rename the player */
 void rename_player(const char *name) {
-	player->name = (char *)realloc(player->name, strlen(name));
+	player->name = (char*)realloc(player->name, strlen(name));
 	strcpy(player->name, name);
 }
 

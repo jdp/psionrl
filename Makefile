@@ -3,7 +3,7 @@ LIBLUA = -llua5.1
 LIBINIPARSER = -liniparser
 
 CC = gcc
-CFLAGS = -Wall -pedantic -ansi
+CFLAGS = -Wall -O2 -pedantic -ansi
 LIBS = $(LIBTCOD) $(LIBLUA) $(LIBINIPARSER)
 OBJ = externs.o main.o game.o map.o script.o misc.o item.o config.o api.o player.o
 OUT = psionrl
