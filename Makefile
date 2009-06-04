@@ -3,47 +3,22 @@ LIBLUA = -llua5.1
 LIBINIPARSER = -liniparser
 
 CC = gcc
-CFLAGS = -Wall -O2 -pedantic -ansi
+CFLAGS =
 LIBS = $(LIBTCOD) $(LIBLUA) $(LIBINIPARSER)
-OBJ = externs.o main.o game.o map.o script.o misc.o item.o config.o api.o player.o
+SRC = externs.c main.c config.c api.c game.c map.c script.c misc.c item.c  \
+      player.c psionics.c
+OBJ = ${SRC:.c=.o}
 OUT = psionrl
 
 $(OUT): $(OBJ) psionrl.h
 	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LIBS)
 	
-main.o: main.c
-	$(CC) -c $<
-	
-externs.o: externs.c
-	$(CC) -c $<
-	
-config.o: config.c
-	$(CC) -c $<
-	
-game.o: game.c
-	$(CC) -c $<
-	
-player.o: player.c
-	$(CC) -c $<
-	
-map.o: map.c
-	$(CC) -c $<
-	
-script.o: script.c
-	$(CC) -c $<
-	
-api.o: api.c
+.c.o:
 	$(CC) $(CFLAGS) -c $<
-	
-misc.o: misc.c
-	$(CC) -c $<
-	
-item.o: item.c
-	$(CC) -c $<
 	
 .PHONY: clean
 clean:
-	rm -rf *.o
+	rm *.o
 
 .PHONY: build
 build:

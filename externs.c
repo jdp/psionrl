@@ -14,7 +14,6 @@ item_list_t *inv = NULL;
 char *font_file = "res/font8x12.bmp";
 int font_glyph_width = 8;
 int font_glyph_height = 12;
-int font_orientation = 0;
 
 /* Interface variables */
 char *ui_caption = "PsionRL";

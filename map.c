@@ -2,6 +2,7 @@
 
 /* Returns a new map instance */
 map_t *map_new(int width, int height) {
+	int x, y;
 	map_t *map;
 	
 	if ((map = (map_t *)malloc(sizeof(map_t))) == NULL) {
@@ -13,7 +14,6 @@ map_t *map_new(int width, int height) {
 	map->tiles = (tile_t *)malloc(sizeof(tile_t)*width*height);
 	map->fov = TCOD_map_new(width, height);
 	
-	int x, y;
 	for (y = 0; y < height; y++) {
 		for (x = 0; x < width; x++) {
 			map->tiles[y*width+x] = tileset[TILE_WALL];
@@ -21,6 +21,13 @@ map_t *map_new(int width, int height) {
 	}
 	
 	return map;
+}
+
+/* Destroys a map instance */
+void map_destroy(map_t* map) {
+	free(map->tiles);
+	TCOD_map_delete(map->fov);
+	free(map);
 }
 
 /* Returns a static map */

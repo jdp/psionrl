@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <time.h>
 #include <string.h>
 #include <ctype.h>
 #include <iniparser.h>
@@ -44,8 +45,9 @@ typedef TCOD_color_t color;
 #define C_MSG			C_LIGHT_GREY
 
 /* Nothing worse than long function names */
+#define INI_FILE             "config.ini"
 #define ini_open(f)          iniparser_load(f)
-#define ini_getstr(f, v, d)	 iniparser_getstring(f, v, d)
+#define ini_getstr(f, v, d)	 strdup(iniparser_getstring(f, v, d))
 #define ini_getint(f, v, d)  iniparser_getint(f, v, d)
 #define ini_getbool(f, v, d) iniparser_getboolean(f, v, d)
 
@@ -105,13 +107,14 @@ int config(void);
 /* Player prototypes */
 
 int  init_player(void);
-void rename_player(const char *);
+void rename_player(const char*);
 void move_player(int, int);
 void blink_player(map_t*);
 
 /* Map prototypes */
 
 map_t*  map_new(int, int);
+void    map_destroy(map_t*);
 map_t*  map_load_static(const char*);
 void    map_fov_build(map_t*);
 void    map_fov_do(map_t*, int, int);
@@ -127,6 +130,9 @@ void    generate_dungeon(map_t*);
 item_list_t* item_list_new(void);
 int          item_list_add(item_list_t*, item_t*);
 item_t*      item_new(const char*, bool, int);
+
+/* Psionics Prototypes */
+void psion_scan(map_t *map);
 
 /* Gameplay prototypes */
 
@@ -172,7 +178,6 @@ extern item_list_t *inv;
 extern char* font_file;
 extern int   font_glyph_width;
 extern int   font_glyph_height;
-extern int   font_orientation;
 
 extern char* ui_caption;
 extern int   ui_width;

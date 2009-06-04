@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 {
 	/* Open up the Lua environment */
 	if (!init_scripting()) {
-		fprintf(stderr, "Error starting Lua environment.\n");
+		fprintf(stderr, "Error starting Lua environment\n");
 		return 1;
 	}
 	
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 	
 	/* Configure the game */
 	if (!config()) {
-		fprintf(stderr, "Configuration error.\n");
+		fprintf(stderr, "Configuration error\n");
 		return 1;
 	}
 	

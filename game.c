@@ -13,7 +13,6 @@ void play(void) {
 	int x, y, vpx, vpy;
 	
 	/* A messy way to do the map, works for now */
-	//map_t *map = map_load_static("hq_floor_1");
 	map_t *map = map_new(50, 50);
 	generate_cave(map);
 	map_fov_build(map);
@@ -136,6 +135,11 @@ void play(void) {
 				case 'c':
 					character();
 					break;
+					
+				/* Use scan ability */
+				case 's':
+					psion_scan(map);
+					break;
 				
 				default:
 					break;
@@ -143,7 +147,8 @@ void play(void) {
 		}
 	}
 	
-	free(map);
+	/* Clean up, the game is over */
+	map_destroy(map);
 }
 
 bool quit(void) {
@@ -180,7 +185,7 @@ void character(void) {
 	
 	clear();
 	
-	// Show statistics
+	/* Show statistics */
 	fgcolor(C_WHITE);
 	putstrf(1, 1, "%s", player->name);
 	fgcolor(C_LIGHT_GREY);
@@ -191,7 +196,7 @@ void character(void) {
 	putstrf(1, line++, "Wisdom: %d", 1);
 	putstrf(1, line++, "Speed:  %d", 2);
 	
-	// Show intrinsics
+	/* Show intrinsics */
 	line++;
 	fgcolor(C_WHITE);
 	putstrf(1, line++, "Intrinsics");

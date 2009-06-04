@@ -2,12 +2,12 @@ A roguelike based on psionic mechanics.
 
 Requirements to compile:
 	Lua 5.1, The Doryen Library 1.4.0, iniParser 3.0b
-	
+
 Lua
 	http://www.lua.org/
-	
+
 The Doryen Library
-	http://jice.nospam.googlepages.com/thedoryenlibrary
+	http://thedoryenlibrary.appspot.com/
 
 iniParser
 	http://ndevilla.free.fr/iniparser/
