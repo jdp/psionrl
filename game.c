@@ -1,10 +1,10 @@
 #include "psionrl.h"
 
-/* Returns whether or not a player can walk on a tile */
-bool is_walkable(map_t *m, int x, int y) {
-	return(TCOD_map_is_walkable(m->fov, x, y)
-	       && (x >= 0) && (x < m->width)
-		   && (y >= 0) && (y < m->height));
+/* Attempts to move, processes a turn */
+void attempt_move(map_t* m, int newx, int newy) {
+	if (is_walkable(m, newx, newy)) {
+		move_player(newx, newy);
+	}
 }
 
 /* The main game loop */
@@ -80,32 +80,40 @@ void play(void) {
 		if (k.c == 0) {
 			switch (k.vk) {
 				/* Move around */
-				case TCODK_KP8:
+				case TCODK_KP7: /* up left */
+					attempt_move(map, player->x-1, player->y-1);
+					break;
+					
+				case TCODK_KP8: /* up */
 				case TCODK_UP:
-					if (is_walkable(map, player->x, player->y-1)) {
-						player->y--;
-					}
+					attempt_move(map, player->x, player->y-1);
+					break;
+					
+				case TCODK_KP9: /* up right */
+					attempt_move(map, player->x+1, player->y-1);
+					break;
+					
+				case TCODK_KP1: /* down left */
+					attempt_move(map, player->x-1, player->y+1);
 					break;
 				
-				case TCODK_KP2:
+				case TCODK_KP2: /* down */
 				case TCODK_DOWN:
-					if (is_walkable(map, player->x, player->y+1)) {
-						player->y++;
-					}
+					attempt_move(map, player->x, player->y+1);
+					break;
+					
+				case TCODK_KP3: /* down right */
+					attempt_move(map, player->x+1, player->y+1);
 					break;
 				
-				case TCODK_KP4:
+				case TCODK_KP4: /* left */
 				case TCODK_LEFT:
-					if (is_walkable(map, player->x-1, player->y)) {
-						player->x--;
-					}
+					attempt_move(map, player->x-1, player->y);
 					break;
 				
-				case TCODK_KP6:
+				case TCODK_KP6: /* right */
 				case TCODK_RIGHT:
-					if (is_walkable(map, player->x+1, player->y)) {
-						player->x++;
-					}
+					attempt_move(map, player->x+1, player->y);
 					break;
 				
 				/* View character summary */

@@ -136,6 +136,13 @@ tile_t *tile_at(map_t *map, int x, int y) {
 	return &map->tiles[y*map->width+x];
 }
 
+/* Returns whether or not a player can walk on a tile */
+bool is_walkable(map_t *m, int x, int y) {
+	return(TCOD_map_is_walkable(m->fov, x, y)
+	       && (x >= 0) && (x < m->width)
+		   && (y >= 0) && (y < m->height));
+}
+
 /* Generates a lame-ass forest */
 void generate_forest(map_t *map) {
 	int x, y;

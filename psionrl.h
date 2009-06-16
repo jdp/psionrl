@@ -120,7 +120,7 @@ void    map_fov_build(map_t*);
 void    map_fov_do(map_t*, int, int);
 void    map_fill_rect(map_t*, tile_t, int, int, int, int);
 tile_t* tile_at(map_t*, int, int);
-
+bool    is_walkable(map_t*, int, int);
 void    generate_forest(map_t*);
 void    generate_cave(map_t*);
 void    generate_dungeon(map_t*);
@@ -132,6 +132,7 @@ int          item_list_add(item_list_t*, item_t*);
 item_t*      item_new(const char*, bool, int);
 
 /* Psionics Prototypes */
+
 void psion_scan(map_t *map);
 
 /* Gameplay prototypes */
@@ -140,7 +141,7 @@ void play(void);
 void inventory(void);
 void character(void);
 bool quit(void);
-bool is_walkable(map_t*, int, int);
+void attempt_move(map_t*, int, int);
 
 /* Miscellaneous prototypes */
 
