@@ -1,24 +1,23 @@
 #include "psionrl.h"
 
 void splash(void) {
-	clear();
-	fgcolor(C_WHITE);
-	putstr(1, 1, "PsionRL");
-	fgcolor(C_MSG);
-	putstr(1, 2, "The Poppenkast");
-	putstr(1, 23, "beam '08");
+	clear(NULL);
+	fgcolor(NULL, C_WHITE);
+	putstr(NULL, 1, 1, "PsionRL");
+	fgcolor(NULL, C_MSG);
+	putstr(NULL, 1, 2, "The Poppenkast");
+	putstr(NULL, 1, 23, "beam '08");
 	update();
 }
 
 void menu(void) {
-	clear();
-	fgcolor(C_MSG);
-	putstr(1, 1, "This will be a menu.");
+	clear(NULL);
+	fgcolor(NULL, C_MSG);
+	putstr(NULL, 1, 1, "This will be a menu.");
 	update();
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	/* Open up the Lua environment */
 	if (!init_scripting()) {
 		fprintf(stderr, "Error starting Lua environment\n");

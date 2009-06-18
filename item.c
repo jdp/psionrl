@@ -1,27 +1,10 @@
 #include "psionrl.h"
 
-/* Returns an empty item list */
-item_list_t *item_list_new(void) {
-	item_list_t *ilist;
-	ilist = (item_list_t *)malloc(sizeof(item_list_t));
-	ilist->head = NULL;
-	ilist->tail = NULL;
-	return(ilist);
-}
+TCOD_list_t inv;
 
 /* Adds an item to the list */
-int item_list_add(item_list_t *ilist, item_t *item) {
-	if (ilist->head == NULL) {
-		ilist->head = item;
-	}
-	if (ilist->tail == NULL) {
-		ilist->tail = item;
-	}
-	else {
-		item_t *tail = ilist->tail;
-		tail->next = item;
-	}
-	return(1);
+int inventory_add(item_t *item) {
+	TCOD_list_push(inv, (const void *)item);
 }
 
 /* Returns a new item */

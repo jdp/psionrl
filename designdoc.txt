@@ -1,0 +1,9 @@
+MAIN GAME LOOP
+
+	while playing:
+		draw map
+		draw stats
+		draw message buffer
+		if aiming:
+			draw crosshair
+		react to keypresses

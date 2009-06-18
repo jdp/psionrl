@@ -11,7 +11,13 @@
 #include <lua5.1/lauxlib.h>
 
 /* Useful macros */
-#define GETCH() getkey()
+#define getkey()        TCOD_console_wait_for_keypress(1)
+#define fgcolor(C,c)    TCOD_console_set_foreground_color(C, c)
+#define bgcolor(C,c)    TCOD_console_set_background_color(C, c)
+#define putstr(C,x,y,s) TCOD_console_print_left(C, x, y, TCOD_BKGND_SET, s)
+#define putch(C,x,y,c)  TCOD_console_put_char(C, x, y, c, TCOD_BKGND_SET)
+#define clear(C)        TCOD_console_clear(C)
+#define update()        TCOD_console_flush()
 
 /* Color definitions */
 
@@ -42,7 +48,9 @@ typedef TCOD_color_t color;
 #define C_DARK_GREY		(color){ 68,  68,  68}
 #define C_BLACK			(color){  0,   0,   0}
 #define C_BROWN         (color){111,  79,  37}
+#define C_KEY           (color){255,   0, 255}
 #define C_MSG			C_LIGHT_GREY
+
 
 /* Nothing worse than long function names */
 #define INI_FILE             "config.ini"
@@ -127,8 +135,7 @@ void    generate_dungeon(map_t*);
 
 /* Item prototypes */
 
-item_list_t* item_list_new(void);
-int          item_list_add(item_list_t*, item_t*);
+int          inventory_add(item_t*);
 item_t*      item_new(const char*, bool, int);
 
 /* Psionics Prototypes */
@@ -145,15 +152,8 @@ void attempt_move(map_t*, int, int);
 
 /* Miscellaneous prototypes */
 
-TCOD_key_t getkey(void);
-char       choice(char*);
-void       fgcolor(TCOD_color_t);
-void       bgcolor(TCOD_color_t);
-void       putstr(int, int, char*);
-void       putstrf(int, int, char*, ...);
-void       putch(int, int, unsigned char);
-void       clear(void);
-void       update(void);
+char choice(char*);
+void putstrf(TCOD_console_t*, int, int, char*, ...);
 
 /* Scripting prototypes */
 
@@ -174,7 +174,7 @@ extern lua_State *L;
 
 extern player_t *player;
 
-extern item_list_t *inv;
+extern TCOD_list_t inv;
 
 extern char* font_file;
 extern int   font_glyph_width;
@@ -191,6 +191,9 @@ extern int   ui_msg_x;
 extern int   ui_msg_y;
 extern int   ui_msg_width;
 extern int   ui_msg_height;
+
+extern TCOD_console_t* map_layer;
+extern TCOD_console_t* psion_layer;
 
 extern tile_t tileset[];
 

@@ -1,5 +1,8 @@
 #include "psionrl.h"
 
+TCOD_console_t *map_layer = NULL;
+TCOD_console_t *psion_layer = NULL;
+
 /* Attempts to move, processes a turn */
 void attempt_move(map_t* m, int newx, int newy) {
 	if (is_walkable(m, newx, newy)) {
@@ -17,17 +20,25 @@ void play(void) {
 	generate_cave(map);
 	map_fov_build(map);
 	
+	/* Set up the offscreen consoles */
+	map_layer = TCOD_console_new(ui_viewport_width, ui_viewport_height);
+	psion_layer = TCOD_console_new(ui_viewport_width, ui_viewport_height);
+	TCOD_console_set_key_color(psion_layer, C_KEY);
+	bgcolor(psion_layer, C_KEY);
+	
+	/* Set up the player */
 	init_player();
 	rename_player("Gu the Cabeboy");
 	blink_player(map);
 	
 	/* Initialize the inventory */
-	inv = item_list_new();
+	
 	
 	/* Enter the main game loop! */
 	while (playing) {
+	
 		/* Prepare the screen for drawing */
-		clear();
+		clear(NULL);
 		
 		/* Calculate the position of the viewport */
 		vpx = player->x - ui_viewport_width/2 > 0 ?
@@ -56,21 +67,25 @@ void play(void) {
 				if (((vpy+y) < map->height) && ((vpx+x) < map->width)) {
 					tile_t *tile = tile_at(map, vpx+x, vpy+y);
 					if (TCOD_map_is_in_fov(map->fov, vpx+x, vpy+y)) {
-						fgcolor(tile->fg_lit);
+						fgcolor(map_layer, tile->fg_lit);
 					}
 					else {
-						fgcolor(tile->fg_dark);
+						fgcolor(map_layer, tile->fg_dark);
 					}
-					putch(ui_viewport_x+x, ui_viewport_y+y, tile->glyph);
+					putch(map_layer, x, y, tile->glyph);
 				}
 			}
 		}
 		
+		TCOD_console_blit(map_layer, 0, 0, ui_viewport_width,
+		                  ui_viewport_height, NULL, ui_viewport_x,
+		                  ui_viewport_y, 255);
+		
 		/* Draw the player and status */
-		fgcolor(C_WHITE);
-		putch(ui_viewport_x+player->x-vpx, ui_viewport_y+player->y-vpy, '@');
-		fgcolor(C_MSG);
-		putstr(1, 23, player->name);
+		fgcolor(NULL, C_WHITE);
+		putch(NULL, ui_viewport_x+player->x-vpx, ui_viewport_y+player->y-vpy, '@');
+		fgcolor(NULL, C_MSG);
+		putstr(NULL, 1, 23, player->name);
 		
 		/* Redraw the screen */
 		update();
@@ -160,30 +175,30 @@ void play(void) {
 }
 
 bool quit(void) {
-	fgcolor(C_MSG);
-	putstr(1, 1, "Really quit? [yn]");
+	fgcolor(NULL, C_MSG);
+	putstr(NULL, 1, 1, "Really quit? [yn]");
 	update();
 	return (choice("yn") == 'n');
 }
 
 void inventory(void) {
-	clear();
-	fgcolor(C_WHITE);
-	putstr(1, 1, "Inventory");
+	clear(NULL);
+	fgcolor(NULL, C_WHITE);
+	putstr(NULL, 1, 1, "Inventory");
 	item_t *item = inv->head;
 	if (item == NULL) {
-		fgcolor(C_GREY);
-		putstr(1, 3, "Empty");
+		fgcolor(NULL, C_GREY);
+		putstr(NULL, 1, 3, "Empty");
 	}
 	else {
 		int y = 3;
 		while (item != NULL) {
-			putstr(1, y++, item->name);
+			putstr(NULL, 1, y++, item->name);
 			item = item->next;
 		}
 	}
-	fgcolor(C_GREY);
-	putstr(1, 23, "[? for help]");
+	fgcolor(NULL, C_GREY);
+	putstr(NULL, 1, 23, "[? for help]");
 	update();
 	getkey();
 }
@@ -191,26 +206,23 @@ void inventory(void) {
 void character(void) {
 	int line = 3;
 	
-	clear();
+	clear(NULL);
 	
 	/* Show statistics */
-	fgcolor(C_WHITE);
-	putstrf(1, 1, "%s", player->name);
-	fgcolor(C_LIGHT_GREY);
-	putstrf(1, line++, "Level:  %d", 1);
-	putstrf(1, line++, "Health: %d/%d", 7, 7);
-	putstrf(1, line++, "Mana:   %d/%d", 5, 5);
-	putstrf(1, line++, "Power:  %d", 3);
-	putstrf(1, line++, "Wisdom: %d", 1);
-	putstrf(1, line++, "Speed:  %d", 2);
+	fgcolor(NULL, C_WHITE);
+	putstrf(NULL, 1, 1, "%s", player->name);
+	fgcolor(NULL, C_LIGHT_GREY);
+	putstrf(NULL, 1, line++, "Level:  %d", 1);
+	putstrf(NULL, 1, line++, "Energy: %d/%d", 5, 5);
+	putstrf(NULL, 1, line++, "Focus:  %d", 3);
 	
 	/* Show intrinsics */
 	line++;
-	fgcolor(C_WHITE);
-	putstrf(1, line++, "Intrinsics");
-	fgcolor(C_LIGHT_GREY);
+	fgcolor(NULL, C_WHITE);
+	putstrf(NULL, 1, line++, "Intrinsics");
+	fgcolor(NULL, C_LIGHT_GREY);
 	line++;
-	putstrf(1, line++, "Cold resistant");
+	putstrf(NULL, 1, line++, "Cold resistant");
 	
 	update();
 	getkey();

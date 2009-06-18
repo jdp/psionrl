@@ -10,7 +10,6 @@ void psion_scan(map_t* map) {
 	
 	while (scanning) {
 		k = getkey();
-		printf("%d -> %d\n", k.vk, TCODK_ESCAPE);
 		switch (k.vk) {
 			case TCODK_ESCAPE:
 				scanning = 0;
