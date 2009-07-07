@@ -4,8 +4,7 @@
 #include <time.h>
 #include <string.h>
 #include <ctype.h>
-#include <iniparser.h>
-#include <tcod/libtcod.h>
+#include "tcod/libtcod.h"
 #include <lua5.1/lua.h>
 #include <lua5.1/lualib.h>
 #include <lua5.1/lauxlib.h>
@@ -50,14 +49,6 @@ typedef TCOD_color_t color;
 #define C_BROWN         (color){111,  79,  37}
 #define C_KEY           (color){255,   0, 255}
 #define C_MSG			C_LIGHT_GREY
-
-
-/* Nothing worse than long function names */
-#define INI_FILE             "config.ini"
-#define ini_open(f)          iniparser_load(f)
-#define ini_getstr(f, v, d)	 strdup(iniparser_getstring(f, v, d))
-#define ini_getint(f, v, d)  iniparser_getint(f, v, d)
-#define ini_getbool(f, v, d) iniparser_getboolean(f, v, d)
 
 /* Player structure */
 

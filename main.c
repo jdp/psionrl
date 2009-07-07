@@ -6,7 +6,7 @@ void splash(void) {
 	putstr(NULL, 1, 1, "PsionRL");
 	fgcolor(NULL, C_MSG);
 	putstr(NULL, 1, 2, "The Poppenkast");
-	putstr(NULL, 1, 23, "beam '08");
+	putstr(NULL, 1, 23, "beam '08-09");
 	update();
 }
 

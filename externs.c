@@ -11,22 +11,22 @@ player_t *player = NULL;
 item_list_t *inv = NULL;
 
 /* Font variables */
-char *font_file = "res/font8x12.bmp";
-int font_glyph_width = 8;
-int font_glyph_height = 12;
+char* font_file = "res/font8x12.bmp";
+int   font_glyph_width = 8;
+int   font_glyph_height = 12;
 
 /* Interface variables */
-char *ui_caption = "PsionRL";
-int ui_width = 40;
-int ui_height = 25;
-int ui_viewport_x = 1;
-int ui_viewport_y = 3;
-int ui_viewport_width = 38;
-int ui_viewport_height = 19;
-int ui_msg_x = 1;
-int ui_msg_y = 1;
-int ui_msg_width = 38;
-int ui_msg_height = 1;
+char* ui_caption = "PsionRL";
+int   ui_width = 40;
+int   ui_height = 25;
+int   ui_viewport_x = 1;
+int   ui_viewport_y = 3;
+int   ui_viewport_width = 38;
+int   ui_viewport_height = 19;
+int   ui_msg_x = 1;
+int   ui_msg_y = 1;
+int   ui_msg_width = 38;
+int   ui_msg_height = 1;
 
 /* The tileset */
 tile_t tileset[MAX_TILES] = {

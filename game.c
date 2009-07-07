@@ -185,6 +185,7 @@ void inventory(void) {
 	clear(NULL);
 	fgcolor(NULL, C_WHITE);
 	putstr(NULL, 1, 1, "Inventory");
+	/*
 	item_t *item = inv->head;
 	if (item == NULL) {
 		fgcolor(NULL, C_GREY);
@@ -197,6 +198,7 @@ void inventory(void) {
 			item = item->next;
 		}
 	}
+	*/
 	fgcolor(NULL, C_GREY);
 	putstr(NULL, 1, 23, "[? for help]");
 	update();

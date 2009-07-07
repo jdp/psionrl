@@ -1,10 +1,9 @@
-LIBTCOD = -ltcod
-LIBLUA = -llua5.1
-LIBINIPARSER = -liniparser
+# point this to wherever you installed libtcod
+LIBTCOD = /home/justin/src/libtcod-1.4.1
 
 CC = gcc
-CFLAGS =
-LIBS = $(LIBTCOD) $(LIBLUA) $(LIBINIPARSER)
+CFLAGS = -L$(LIBTCOD) -I$(LIBTCOD)/include
+LIBS = -ltcod -llua5.1
 SRC = externs.c main.c config.c api.c game.c map.c script.c misc.c item.c  \
       player.c psionics.c
 OBJ = ${SRC:.c=.o}
@@ -18,6 +17,7 @@ $(OUT): $(OBJ) psionrl.h
 	
 .PHONY: clean
 clean:
+	rm $(OUT)
 	rm *.o
 
 .PHONY: build
